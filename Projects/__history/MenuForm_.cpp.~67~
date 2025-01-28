@@ -1,0 +1,77 @@
+#include <fmx.h>
+#include <fmx.Controls.hpp>
+#include <FMX.Forms.hpp>
+#include <FMX.Dialogs.hpp>
+#include <FMX.Graphics.hpp>
+#pragma hdrstop
+
+#include "MenuForm_.h"
+#include "ImageForm_.h"
+#include "GalleryForm_.h"
+//---------------------------------------------------------------------------
+
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TMenuForm *MenuForm;
+//---------------------------------------------------------------------------
+
+__fastcall TMenuForm::TMenuForm(TComponent* Owner)
+    : TForm(Owner)
+{
+    // Tworzenie ImageForm
+    ImageForm = new TImageForm(Application);
+
+    TImage *add_button = new TImage(this);
+    add_button->Parent = this;
+    add_button->Position->X = 50; // Ustawienie pozycji X
+    add_button->Position->Y = 100; // Ustawienie pozycji Y
+    add_button->Width = 150; // Ustawienie szerokoœci
+    add_button->Height = 50; // Ustawienie wysokoœci
+	add_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\button_base.png");
+	add_button->OnClick = add_buttonClick;
+
+    TImage *gallery_button = new TImage(this);
+    gallery_button->Parent = this;
+    gallery_button->Position->X = 50; // Ustawienie pozycji X
+    gallery_button->Position->Y = 200; // Ustawienie pozycji Y
+    gallery_button->Width = 150; // Ustawienie szerokoœci
+	gallery_button->Height = 50; // Ustawienie wysokoœci
+	gallery_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\button_base.png");
+    gallery_button->OnClick = gallery_buttonClick;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::add_buttonClick(TObject *Sender)
+{
+    // Tworzymy instancjê TOpenDialog, która pozwoli na wybór pliku
+    TOpenDialog *OpenDialog = new TOpenDialog(this);
+    OpenDialog->Filter = "Obrazy (*.jpg;*.jpeg;*.bmp;*.png)|*.jpg;*.jpeg;*.bmp;*.png"; // Ustalamy filtr plików
+
+    if (OpenDialog->Execute()) { // Jeœli u¿ytkownik wybra³ plik
+        try {
+            // Za³aduj obraz do ImageForm
+            ImageForm->Image->Bitmap->LoadFromFile(OpenDialog->FileName);
+
+            // Poka¿ ImageForm z za³adowanym obrazem
+            this->Hide();
+            ImageForm->ShowModal();
+            this->Show();
+        } catch (...) {
+            // Obs³uga b³êdów, np. jeœli obraz nie móg³ zostaæ za³adowany
+            ShowMessage("Nie uda³o siê za³adowaæ obrazu.");
+        }
+    }
+
+    // Zwolnij zasoby po zakoñczeniu pracy z dialogiem
+    delete OpenDialog;
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::gallery_buttonClick(TObject *Sender)
+{
+    MenuForm->Hide();
+    GalleryForm->Show();
+}
+//---------------------------------------------------------------------------
+

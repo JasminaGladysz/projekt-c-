@@ -1,0 +1,194 @@
+ //---------------------------------------------------------------------------
+
+#include <fmx.h>
+#pragma hdrstop
+
+#include "RegisterForm_G.h"
+#include "LoginForm_G.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TRegisterFormG *RegisterFormG;
+//---------------------------------------------------------------------------
+__fastcall TRegisterFormG::TRegisterFormG(TComponent* Owner)
+	: TForm(Owner)
+{
+	this->Width = 640;
+	this->Height = 480;
+
+	this->OnResize = FormResize;
+
+	TRectangle *background = new TRectangle(this);
+	background->Parent = this;
+	background->Align = TAlignLayout::Client;
+	TAlphaColor customColor = MakeColor(152, 168, 105);
+	background->Fill->Color = customColor;
+
+	register_title = new TImage(this);
+	register_title->Parent = this;
+	register_title->Position->X = 20;
+	register_title->Position->Y = 20;
+	register_title->Width = 350;
+	register_title->Height = 140;
+	register_title->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\register_title.png");
+
+	r_user_edit = new TEdit(this);
+	r_user_edit->Parent = this;
+	r_user_edit->Position->X = 200;
+	r_user_edit->Position->Y = 150;
+	r_user_edit->Width = 240;
+	r_user_edit->Height = 30;
+
+	r_user_label = new TLabel(this);
+	r_user_label->Parent = this;
+	r_user_label->Position->X = 50;
+	r_user_label->Position->Y = 150;
+	r_user_label->Width = 150;
+	r_user_label->Height = 40;
+	r_user_label->Text = "USERNAME: ";
+	r_user_label->Font->Size = 16;
+
+	r_password_edit = new TEdit(this);
+	r_password_edit->Parent = this;
+	r_password_edit->Position->X = 200;
+	r_password_edit->Position->Y = 200;
+	r_password_edit->Width = 240;
+	r_password_edit->Height = 30;
+	r_password_edit->Password = true;
+
+	r_password_label = new TLabel(this);
+	r_password_label->Parent = this;
+	r_password_label->Position->X = 50;
+	r_password_label->Position->Y = 200;
+	r_password_label->Width = 150;
+	r_password_label->Height = 40;
+	r_password_label->Text = "PASSWORD: ";
+	r_password_label->Font->Size = 16;
+
+	r_password_edit1 = new TEdit(this);
+	r_password_edit1->Parent = this;
+	r_password_edit1->Position->X = 200;
+	r_password_edit1->Position->Y = 250;
+	r_password_edit1->Width = 240;
+	r_password_edit1->Height = 30;
+	r_password_edit1->Password = true;
+
+	r_password_label1 = new TLabel(this);
+	r_password_label1->Parent = this;
+	r_password_label1->Position->X = 50;
+	r_password_label1->Position->Y = 250;
+	r_password_label1->Width = 150;
+	r_password_label1->Height = 40;
+	r_password_label1->Text = "REPEAT PASSWORD: ";
+	r_password_label1->Font->Size = 16;
+
+    rregister_button = new TImage(this);
+	rregister_button->Parent = this;
+	rregister_button->Position->X = 350;
+	rregister_button->Position->Y = 320;
+	rregister_button->Width = 120;
+	rregister_button->Height = 50;
+	rregister_button->OnClick = rregister_buttonClick;
+	rregister_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\register_button.png");
+
+	rback_button = new TImage(this);
+	rback_button->Parent = this;
+	rback_button->Position->X = 200;
+	rback_button->Position->Y = 320;
+	rback_button->Width = 120;
+	rback_button->Height = 50;
+	rback_button->OnClick = rback_buttonClick;
+	rback_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\back_button.png");
+
+}
+
+void __fastcall TRegisterFormG::rregister_buttonClick(TObject *Sender)
+{
+	FDConnection1 = new TFDConnection(this);
+	FDQuery1 = new TFDQuery(this);
+
+	try {
+		FDConnection1->DriverName = "SQLite";
+		FDConnection1->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\uzytkownicy.db";
+		FDConnection1->LoginPrompt = false;
+
+        FDConnection1->Connected = true;
+
+		FDQuery1->Connection = FDConnection1;
+
+        AnsiString username = r_user_edit->Text;
+		AnsiString password = r_password_edit->Text;
+		AnsiString repeatPassword = r_password_edit1->Text;
+
+        if (username.IsEmpty() || password.IsEmpty()) {
+            ShowMessage("fields can not be empty");
+            return;
+		}
+        if (password != repeatPassword) {
+			ShowMessage("wrong password");
+            return;
+		}
+
+        FDQuery1->SQL->Text = "INSERT INTO Users (Username, Password) VALUES (:Username, :Password)";
+        FDQuery1->ParamByName("Username")->AsString = username;
+        FDQuery1->ParamByName("Password")->AsString = password;
+
+        FDQuery1->ExecSQL();
+
+		ShowMessage("SUCCES!");
+		this->Close();
+		LoginFormG->Show();
+    }
+    catch (const Exception &e) {
+		ShowMessage("error: " + e.Message);
+    }
+
+    if (FDQuery1 != nullptr) {
+        FDQuery1->Free();
+    }
+    if (FDConnection1 != nullptr) {
+        FDConnection1->Free();
+    }
+}
+
+
+void __fastcall TRegisterFormG::rback_buttonClick(TObject *Sender)
+{
+	this->Close();
+	LoginFormG->Show();
+}
+
+void __fastcall TRegisterFormG::FormResize(TObject *Sender)
+{
+	const int horizontalMargin = 50;
+	const int verticalSpacing = 20;
+
+	register_title->Position->X = (this->Width - register_title->Width) / 2;
+	register_title->Position->Y = verticalSpacing;
+	int currentY = register_title->Position->Y + register_title->Height + verticalSpacing;
+
+	r_user_edit->Position->X = (this->Width - r_user_edit->Width) / 2;
+	r_user_edit->Position->Y = currentY;
+	r_user_label->Position->X = r_user_edit->Position->X - r_user_label->Width - 10;
+	r_user_label->Position->Y = currentY + (r_user_edit->Height - r_user_label->Height) / 2;
+	currentY += r_user_edit->Height + verticalSpacing;
+
+	r_password_edit->Position->X = (this->Width - r_password_edit->Width) / 2;
+	r_password_edit->Position->Y = currentY;
+	r_password_label->Position->X = r_password_edit->Position->X - r_password_label->Width - 10;
+	r_password_label->Position->Y = currentY + (r_password_edit->Height - r_password_label->Height) / 2;
+	currentY += r_password_edit->Height + verticalSpacing;
+
+	r_password_edit1->Position->X = (this->Width - r_password_edit1->Width) / 2;
+	r_password_edit1->Position->Y = currentY;
+	r_password_label1->Position->X = r_password_edit1->Position->X - r_password_label1->Width - 10;
+	r_password_label1->Position->Y = currentY + (r_password_edit1->Height - r_password_label1->Height) / 2;
+
+	currentY += r_password_edit1->Height + verticalSpacing * 2;
+
+	rregister_button->Position->X = (this->Width - rregister_button->Width) / 2 + rregister_button->Width + 10;
+	rregister_button->Position->Y = currentY;
+	rback_button->Position->X = (this->Width - rback_button->Width) / 2 - rback_button->Width - 10;
+	rback_button->Position->Y = currentY;
+}
+

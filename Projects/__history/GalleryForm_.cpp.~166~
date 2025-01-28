@@ -1,0 +1,391 @@
+#include <fmx.h>
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Phys.SQLite.hpp>
+#include <System.IOUtils.hpp>
+
+#pragma hdrstop
+#include "GalleryForm_.h"
+#include "ItemForm_.h"
+
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TGalleryForm *GalleryForm;
+TItemForm *ItemForm;
+
+__fastcall TGalleryForm::TGalleryForm(TComponent* Owner)
+	: TForm(Owner), dispId(0), sezonFilter(15), okazjaFilter(15)
+{
+	this->Width = 750;
+	this->Height = 650;
+
+  /*	BackgroundImage = new TImage(this);
+	BackgroundImage->Parent = this;
+	BackgroundImage->Align = TAlignLayout::Client;
+    BackgroundImage->WrapMode = TImageWrapMode::Stretch;
+	BackgroundImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\pobierz.jpg");  // Za³adowanie obrazu
+	BackgroundImage->SendToBack();     */
+
+//CHECKBOZY NA PORY ROKU
+	const int checkboxY = 40;
+	const int checkboxSpacing = 120;
+	int checkboxX = 40;
+
+	SummerBox = new TCheckBox(this);
+	SummerBox->Parent = this;
+	SummerBox->Position->X = checkboxX;
+	SummerBox->Position->Y = checkboxY;
+
+	SunImage = new TImage(this);
+	SunImage->Parent = this;
+	SunImage->Position->X = checkboxX + 20;
+	SunImage->Position->Y = checkboxY;
+	SunImage->Width = 30;
+	SunImage->Height = 30;
+	SunImage->Tag = -1;
+	SunImage->WrapMode = TImageWrapMode::Fit;
+	SunImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\summer.jpg");
+    SunImage->BringToFront();
+
+	checkboxX += checkboxSpacing;  //przesuniêcie X dla kolejnego checkboxa
+
+	SpringBox = new TCheckBox(this);
+	SpringBox->Parent = this;
+	SpringBox->Position->X = checkboxX;
+	SpringBox->Position->Y = checkboxY;
+
+	FlowerImage = new TImage(this);
+	FlowerImage->Parent = this;
+	FlowerImage->Position->X = checkboxX + 20;
+	FlowerImage->Position->Y = checkboxY;
+	FlowerImage->Width = 30;
+	FlowerImage->Height = 30;
+	FlowerImage->Tag = -1;
+	FlowerImage->WrapMode = TImageWrapMode::Fit;
+	FlowerImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\spring.png");
+
+	checkboxX += checkboxSpacing;
+
+	FallBox = new TCheckBox(this);
+	FallBox->Parent = this;
+	FallBox->Position->X = checkboxX;
+	FallBox->Position->Y = checkboxY;
+
+	LeafImage = new TImage(this);
+	LeafImage->Parent = this;
+	LeafImage->Position->X = checkboxX + 20;
+	LeafImage->Position->Y = checkboxY;
+	LeafImage->Width = 30;
+	LeafImage->Height = 30;
+	LeafImage->Tag = -1;
+	LeafImage->WrapMode = TImageWrapMode::Fit;
+	LeafImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\fall.jpg");
+
+	checkboxX += checkboxSpacing;
+
+	WinterBox = new TCheckBox(this);
+	WinterBox->Parent = this;
+	WinterBox->Position->X = checkboxX;
+	WinterBox->Position->Y = checkboxY;
+
+	FlakeImage = new TImage(this);
+	FlakeImage->Parent = this;
+	FlakeImage->Position->X = checkboxX + 20;
+	FlakeImage->Position->Y = checkboxY;
+	FlakeImage->Width = 30;
+	FlakeImage->Height = 30;
+	FlakeImage->Tag = -1;
+	FlakeImage->BringToFront();
+	FlakeImage->WrapMode = TImageWrapMode::Fit;
+	FlakeImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\winter.jpg");
+
+
+//CHECKBOZY NA OKAZJE
+	const int checkboxY1 = 80;  // Sta³a pozycja Y dla checkboxów
+	int checkboxX1 = 40;  // Startowa pozycja X dla checkboxów
+
+	CasualBox = new TCheckBox(this);
+	CasualBox->Parent = this;
+	CasualBox->Position->X = checkboxX1;
+	CasualBox->Position->Y = checkboxY1;
+
+	CasualImage = new TImage(this);
+	CasualImage->Parent = this;
+	CasualImage->Position->X = checkboxX1 + 20;
+	CasualImage->Position->Y = checkboxY1;
+	CasualImage->Width = 30;
+	CasualImage->Height = 30;
+	CasualImage->Tag = -1;
+	CasualImage->WrapMode = TImageWrapMode::Fit;
+	CasualImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\casual.jpg");
+	CasualImage->BringToFront();
+
+	checkboxX1 += checkboxSpacing;  //przesuniêcie X dla kolejnego checkboxa
+
+	BlackTieBox = new TCheckBox(this);
+	BlackTieBox->Parent = this;
+	BlackTieBox->Position->X = checkboxX1;
+	BlackTieBox->Position->Y = checkboxY1;
+
+	BlackTieImage = new TImage(this);
+	BlackTieImage->Parent = this;
+	BlackTieImage->Position->X = checkboxX1 + 20;
+	BlackTieImage->Position->Y = checkboxY1;
+	BlackTieImage->Width = 30;
+	BlackTieImage->Height = 30;
+	BlackTieImage->Tag = -1;
+	BlackTieImage->WrapMode = TImageWrapMode::Fit;
+	BlackTieImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\blacktie.jpg");
+
+	checkboxX1 += checkboxSpacing;
+
+	SportyBox = new TCheckBox(this);
+	SportyBox->Parent = this;
+	SportyBox->Position->X = checkboxX1;
+	SportyBox->Position->Y = checkboxY1;
+
+	SportyImage = new TImage(this);
+	SportyImage->Parent = this;
+	SportyImage->Position->X = checkboxX1 + 20;
+	SportyImage->Position->Y = checkboxY1;
+	SportyImage->Width = 30;
+	SportyImage->Height = 30;
+	SportyImage->Tag = -1;
+	SportyImage->WrapMode = TImageWrapMode::Fit;
+	SportyImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\sporty.jpg");
+
+	checkboxX1 += checkboxSpacing;
+
+	PartyBox = new TCheckBox(this);
+	PartyBox->Parent = this;
+	PartyBox->Position->X = checkboxX1;
+	PartyBox->Position->Y = checkboxY1;
+
+	PartyImage = new TImage(this);
+	PartyImage->Parent = this;
+	PartyImage->Position->X = checkboxX1 + 20;
+	PartyImage->Position->Y = checkboxY1;
+	PartyImage->Width = 30;
+	PartyImage->Height = 30;
+	PartyImage->Tag = -1;
+	PartyImage->BringToFront();
+	PartyImage->WrapMode = TImageWrapMode::Fit;
+	PartyImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\party.jpg");
+
+
+
+	// PRZYCISKI
+	nextButton = new TButton(this);
+	nextButton->Parent = this;
+	nextButton->Text = "Next";
+	nextButton->Position->X = 500;
+	nextButton->Position->Y = 550;
+	nextButton->OnClick = NextButtonClick;
+
+	prevButton = new TButton(this);
+	prevButton->Parent = this;
+	prevButton->Text = "Previous";
+	prevButton->Position->X = 100;
+	prevButton->Position->Y = 550;
+	prevButton->OnClick = PrevButtonClick;
+
+	filterButton = new TButton(this);
+	filterButton->Parent = this;
+	filterButton->Text = "Filter";
+	filterButton->Position->X = 500;
+	filterButton->Position->Y = 40;
+	filterButton->OnClick = FilterButtonClick;
+
+	LoadImages(sezonFilter, okazjaFilter);
+}
+
+
+void __fastcall TGalleryForm::NextButtonClick(TObject *Sender) {
+	dispId += 8;
+	LoadImages(sezonFilter, okazjaFilter);
+}
+
+void __fastcall TGalleryForm::PrevButtonClick(TObject *Sender) {
+	dispId = (dispId >= 8) ? dispId - 8 : 0;
+	LoadImages(sezonFilter, okazjaFilter);
+}
+
+void __fastcall TGalleryForm::FilterButtonClick(TObject *Sender) {
+	 // checkbozy sezonów
+	int sezonFilter = 0;
+	if (SummerBox->IsChecked) sezonFilter |= 2; // SummerBox (2) bit
+	if (SpringBox->IsChecked) sezonFilter |= 1; // SpringBox (1) bit
+	if (FallBox->IsChecked) sezonFilter |= 4;   // FallBox (4) bit
+	if (WinterBox->IsChecked) sezonFilter |= 8; // WinterBox (8) bit
+
+	// Chekboxy okazji
+	int okazjaFilter = 0;
+	if (CasualBox->IsChecked) okazjaFilter |= 1;  // CasualBox (1) bit
+	if (BlackTieBox->IsChecked) okazjaFilter |= 2; // BlackTieBox (2) bit
+	if (SportyBox->IsChecked) okazjaFilter |= 8;  // SportyBox (8) bit
+	if (PartyBox->IsChecked) okazjaFilter |= 4;   // PartyBox (4) bit
+	LoadImages(sezonFilter, okazjaFilter);
+}
+
+void TGalleryForm::LoadImages(int sezonFilter, int okazjaFilter) {
+
+	const int galleryStartX = 70;
+	const int galleryStartY = 120;
+	const int maxImagesPerRow = 4;
+	const int imageWidth = 130;
+	const int imageHeight = 170;
+	const int horizontalSpacing = 20;
+	const int verticalSpacing = 20;
+
+	const int iconSize = 10;
+	const int iconMargin = 3;
+
+	// Po³¹czenie z baz¹ danych
+	TFDConnection *FDConnection = new TFDConnection(nullptr);
+	TFDQuery *FDQuery = new TFDQuery(nullptr);
+
+	try {
+		FDConnection->DriverName = "SQLite";
+		FDConnection->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\szafa.db";
+		FDConnection->Connected = true;
+
+		FDQuery->Connection = FDConnection;
+
+		FDQuery->SQL->Text = "SELECT ID, PIC, SEZON, OKAZJA FROM szafa WHERE (sezon & :SezonFilter) != 0 AND (okazja & :OkazjaFilter) != 0 LIMIT 8 OFFSET :Offset";
+        FDQuery->ParamByName("SezonFilter")->AsInteger = sezonFilter;
+		FDQuery->ParamByName("OkazjaFilter")->AsInteger = okazjaFilter;
+		FDQuery->ParamByName("Offset")->AsInteger = dispId;
+
+		FDQuery->Open();
+
+//usuwanie
+for (int i = this->Children->Count - 1; i >= 0; i--) {
+	TImage *image = dynamic_cast<TImage*>(this->Children->Items[i]);
+	if (image && (image->Tag != -1)) {
+		delete image; //je¿eli Tag jest inny ni¿ -1 usuwamy obraz/iconê
+	}
+}
+
+
+		int index = 0;
+		while (!FDQuery->Eof && index < 8) {
+            int id = FDQuery->FieldByName("ID")->AsInteger;
+			int sezon = FDQuery->FieldByName("SEZON")->AsInteger;
+			int okazja = FDQuery->FieldByName("OKAZJA")->AsInteger;
+			TBlobField *blobField = dynamic_cast<TBlobField*>(FDQuery->FieldByName("PIC"));
+
+			if (blobField != nullptr) {
+				String tempFile = System::Ioutils::TPath::GetTempFileName() + ".jpg";
+
+				TMemoryStream *blobStream = new TMemoryStream();
+				try {
+					blobField->SaveToStream(blobStream);
+					blobStream->SaveToFile(tempFile);
+				} __finally {
+					delete blobStream;
+				}
+
+				// Pozycjonowanie obrazu
+				int posX = galleryStartX + (index % maxImagesPerRow) * (imageWidth + horizontalSpacing);
+				int posY = galleryStartY + (index / maxImagesPerRow) * (imageHeight + verticalSpacing);
+
+				icon = new TImage(this);
+				icon->Parent = this;
+				icon->Position->X = posX;
+				icon->Position->Y = posY;
+				icon->Width = imageWidth;
+				icon->Height = imageHeight;
+				icon->WrapMode = TImageWrapMode::Fit;
+				icon->Bitmap->LoadFromFile(tempFile);
+				icon->BringToFront();
+				icon->Tag = 2;
+				icon->OnClick = ImageClick;
+
+				// Dodaj obraz do mapy
+				imageMap[id] = tempFile;
+
+					// Dodaj ikony dla sezonu
+				int iconPosX = icon->Position->X + iconMargin;
+				int iconPosY = icon->Position->Y + iconMargin;
+
+				int iconOffsetY = 0; // Resetujemy przesuniêcie dla ka¿dego obrazu
+
+				if (sezon & 1) {
+				  AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\spring.png", icon); // Wiosna
+				 iconOffsetY += 24; // Zwiêkszamy przesuniêcie o wysokoœæ ikony + margines
+				}
+				if (sezon & 2) {
+				 AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\summer.jpg", icon); // Lato
+				 iconOffsetY += 24; // Zwiêkszamy przesuniêcie
+				}
+				if (sezon & 4) {
+				  AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\fall.jpg", icon); // Jesieñ
+				  iconOffsetY += 24; // Zwiêkszamy przesuniêcie
+				}
+				if (sezon & 8) {
+				  AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\winter.jpg", icon); // Zima
+				  iconOffsetY += 24; // Zwiêkszamy przesuniêcie
+				}
+
+				// Ikony okazji
+				if (okazja & 1) {
+				  AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\casual.jpg", icon); // Casual
+				  iconOffsetY += 24; // Zwiêkszamy przesuniêcie
+				}
+				if (okazja & 2) {
+				   AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\blacktie.jpg", icon); // Black Tie
+				  iconOffsetY += 24; // Zwiêkszamy przesuniêcie
+				}
+				if (okazja & 4) {
+				   AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\party.jpg", icon); // Party
+				  iconOffsetY += 24; // Zwiêkszamy przesuniêcie
+				}
+				if (okazja & 8) {
+				   AddIcon(iconPosX, iconPosY + iconOffsetY, "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\sporty.jpg", icon); // Sporty
+				   iconOffsetY += 24; // Zwiêkszamy przesuniêcie
+				}
+
+			} else {
+				ShowMessage("Kolumna PIC jest pusta lub niepoprawna dla ID: " + IntToStr(id));
+			}
+
+			FDQuery->Next();
+			index++;
+		}
+
+	} catch (Exception &e) {
+		ShowMessage("B³¹d konfiguracji bazy danych: " + e.Message);
+	}
+
+	// Zwolnienie pamiêci
+	delete FDQuery;
+	delete FDConnection;
+}
+
+  void TGalleryForm::AddIcon(int x, int y, String iconPath, TImage *parent) {
+	icon = new TImage(this);
+	icon->Parent = this;
+	icon->Position->X = x;
+	icon->Position->Y = y;
+	icon->Width = 20;
+	icon->Height = 20;
+	icon->WrapMode = TImageWrapMode::Fit;
+	icon->Bitmap->LoadFromFile(iconPath);
+	icon->Tag = 2;
+}
+
+
+void __fastcall TGalleryForm::ImageClick(TObject *Sender) {
+	TImage *image = dynamic_cast<TImage*>(Sender);
+	if (image) {
+		int id = image->Tag;
+		TItemForm *Itemform = new TItemForm(this, id);
+
+		if (imageMap.find(id) != imageMap.end()) {
+			String imagePath = imageMap[id];
+
+			TItemForm *form = new TItemForm(this, id);
+			form->LoadImage(imagePath);
+			form->Show();
+		}
+	}
+}

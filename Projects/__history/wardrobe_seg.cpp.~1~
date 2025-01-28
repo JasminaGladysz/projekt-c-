@@ -1,0 +1,36 @@
+//---------------------------------------------------------------------------
+
+#include <fmx.h>
+#pragma hdrstop
+
+#include "wardrobe_seg.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TForm1 *Form1;
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+__fastcall TFilePreviewForm::TFilePreviewForm(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+
+void TFilePreviewForm::SetFilePath(const String &path)
+{
+	filePath = path;
+
+	// Wyœwietlamy œcie¿kê w Label
+	Label1->Text = "Selected File: " + filePath;
+
+	// Jeœli to obraz, za³aduj go do TImage
+	try {
+		Image1->Bitmap->LoadFromFile(filePath);
+	} catch (...) {
+		ShowMessage("Could not load image.");
+	}
+}

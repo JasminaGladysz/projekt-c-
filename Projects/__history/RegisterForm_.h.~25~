@@ -1,0 +1,33 @@
+//---------------------------------------------------------------------------
+#define RegisterForm_H
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+#include <FMX.Controls.Presentation.hpp>
+#include <FMX.Edit.hpp>
+#include <FMX.StdCtrls.hpp>
+#include <FMX.Types.hpp>
+//---------------------------------------------------------------------------
+class TRegisterForm : public TForm
+{
+__published:	// IDE-managed Components
+	TEdit *r_user_edit;
+	TEdit *r_password_edit;
+	TLabel *r_password_label;
+	TLabel *r_user_label;
+	TButton *rregister_button;
+	TButton *rback_button;
+	TLabel *r_password_label1;
+	TEdit *r_password_edit1;
+	void __fastcall rregister_buttonClick(TObject *Sender);
+	void __fastcall rback_buttonClick(TObject *Sender);
+    void __fastcall r_password_editChange(TObject *Sender);
+private:	// User declarations
+public:		// User declarations
+	__fastcall TRegisterForm(TComponent* Owner);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TRegisterForm *RegisterForm;
+//---------------------------------------------------------------------------
+

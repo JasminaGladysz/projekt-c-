@@ -1,0 +1,64 @@
+//---------------------------------------------------------------------------
+
+#ifndef LoginForm_GH
+#define LoginForm_GH
+//---------------------------------------------------------------------------
+
+#include <System.Classes.hpp>          // Podstawowe klasy, np. TObject
+#include <FMX.Forms.hpp>               // TForm
+#include <FMX.Types.hpp>               // Podstawowe typy FMX
+#include <FMX.Controls.hpp>            // Komponenty wizualne, np. TEdit
+#include <FMX.Objects.hpp>             // TImage
+#include <FMX.StdCtrls.hpp>            // TLabel
+#include <Data.DB.hpp>                 // Typy bazy danych
+#include <FireDAC.Comp.Client.hpp>     // TFDQuery, TFDConnection
+#include <FireDAC.Comp.DataSet.hpp>
+#include <FireDAC.DApt.hpp>
+#include <FireDAC.DApt.Intf.hpp>
+#include <FireDAC.DatS.hpp>
+#include <FireDAC.FMXUI.Wait.hpp>
+#include <FireDAC.Phys.hpp>
+#include <FireDAC.Phys.Intf.hpp>
+#include <FireDAC.Phys.SQLite.hpp>
+#include <FireDAC.Phys.SQLiteDef.hpp>
+#include <FireDAC.Phys.SQLiteWrapper.Stat.hpp>
+#include <FireDAC.Stan.Async.hpp>
+#include <FireDAC.Stan.Def.hpp>
+#include <FireDAC.Stan.Error.hpp>
+#include <FireDAC.Stan.ExprFuncs.hpp>
+#include <FireDAC.Stan.Intf.hpp>
+#include <FireDAC.Stan.Option.hpp>
+#include <FireDAC.Stan.Param.hpp>
+#include <FireDAC.Stan.Pool.hpp>
+#include <FireDAC.UI.Intf.hpp>
+#include <FMX.Controls.Presentation.hpp>
+#include <FMX.Edit.hpp>    // Obs³uga dataset FireDAC
+//---------------------------------------------------------------------------
+
+class TLoginFormG : public TForm
+{
+__published:	// IDE-managed Components
+	void __fastcall account_buttonClick(TObject *Sender); // Obs³uga przycisku tworzenia konta
+	void __fastcall login_buttonClick(TObject *Sender);
+void __fastcall FormResize(TObject *Sender)
+
+private:	// Deklaracje prywatne
+	TImage *title;
+	TLabel *login_label;
+	TLabel *password_label;
+	TImage *login_button;           // Przycisk logowania jako obraz
+	TImage *account_button;         // Przycisk tworzenia konta jako obraz
+	TEdit *login;                   // Pole loginu
+	TEdit *password;                // Pole has³a
+	TLabel *login_info;
+	TFDQuery *FDQuery;             // Zapytanie do bazy danych
+	TFDConnection *FDConnection;   // Po³¹czenie z baz¹ danych
+
+public:		// Deklaracje publiczne
+	__fastcall TLoginFormG(TComponent* Owner); // Konstruktor
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TLoginFormG *LoginFormG;
+//---------------------------------------------------------------------------
+#endif
+

@@ -1,0 +1,42 @@
+object GalleryForm: TGalleryForm
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 480
+  ClientWidth = 626
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object Image1: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Position.X = 216.000000000000000000
+    Position.Y = 152.000000000000000000
+    Size.Width = 145.000000000000000000
+    Size.Height = 217.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object NextPageButton: TButton
+    Position.X = 344.000000000000000000
+    Position.Y = 432.000000000000000000
+    Size.Width = 56.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'Next'
+    TextSettings.Trimming = None
+  end
+  object PrevPageButton: TButton
+    Position.X = 224.000000000000000000
+    Position.Y = 432.000000000000000000
+    Size.Width = 56.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = 'Previous'
+    TextSettings.Trimming = None
+    OnClick = PrevPageButtonClick
+  end
+end

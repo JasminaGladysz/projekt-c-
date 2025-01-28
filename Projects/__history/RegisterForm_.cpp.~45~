@@ -1,0 +1,165 @@
+//---------------------------------------------------------------------------
+
+#include <fmx.h>
+#pragma hdrstop
+
+#include "RegisterForm_.h"
+#include "LoginForm_.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TRegisterForm *RegisterForm;
+//---------------------------------------------------------------------------
+__fastcall TRegisterForm::TRegisterForm(TComponent* Owner)
+	: TForm(Owner)
+{
+	this->Width = 700;
+	this->Height = 424;
+
+	BackgroundImage = new TImage(this);
+	BackgroundImage->Parent = this;
+	BackgroundImage->Align = TAlignLayout::Client;
+	BackgroundImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\pobierz.jpg");  // Za³adowanie obrazu
+	BackgroundImage->SendToBack();
+
+	r_password_edit1->Visible = false;
+	r_password_label1->Visible = false;
+
+	r_user_edit = new TEdit(this);
+	r_user_edit->Parent = this;
+	r_user_edit->Position->X = 350;
+	r_user_edit->Position->Y = 150;
+	r_user_edit->Width = 150;
+	r_user_edit->Height = 20;
+
+	r_user_label = new TLabel(this);
+	r_user_label->Parent = this;
+	r_user_label->Position->X = 300;
+	r_user_label->Position->Y = 150;
+	r_user_label->Width = 130;
+	r_user_label->Height = 40;
+	r_user_label->Text = "USERNAME: ";
+	r_user_label->Font->Size = 14;
+	r_user_label->TextSettings->FontColor = TAlphaColors::Red;
+	r_user_label->TextSettings->HorzAlign = TTextAlign::Center;
+
+	r_password_edit = new TEdit(this);
+	r_password_edit->Parent = this;
+	r_password_edit->Position->X = 350;
+	r_password_edit->Position->Y = 200;
+	r_password_edit->Width = 150;
+	r_password_edit->Height = 20;
+
+	r_password_label = new TLabel(this);
+	r_password_label->Parent = this;
+	r_password_label->Position->X = 300;
+	r_password_label->Position->Y = 200;
+	r_password_label->Width = 130;
+	r_password_label->Height = 40;
+	r_password_label->Text = "PASSWORD: ";
+	r_password_label->Font->Size = 14;
+	r_password_label->TextSettings->FontColor = TAlphaColors::Red;
+	r_password_label->TextSettings->HorzAlign = TTextAlign::Center;
+
+	r_password_edit1 = new TEdit(this);
+	r_password_edit1->Parent = this;
+	r_password_edit1->Position->X = 350;
+	r_password_edit1->Position->Y = 200;
+	r_password_edit1->Width = 150;
+	r_password_edit1->Height = 20;
+
+	r_password_label1 = new TLabel(this);
+	r_password_label1->Parent = this;
+	r_password_label1->Position->X = 300;
+	r_password_label1->Position->Y = 250;
+	r_password_label1->Width = 130;
+	r_password_label1->Height = 40;
+	r_password_label1->Text = "REPEAT PASSWORD: ";
+	r_password_label1->Font->Size = 14;
+	r_password_label1->TextSettings->FontColor = TAlphaColors::Red;
+	r_password_label1->TextSettings->HorzAlign = TTextAlign::Center;
+
+	rregister_button = new TImage(this);
+	rregister_button->Parent = this;
+	rregister_button->Position->X = 320; // Pozycja X
+	rregister_button->Position->Y = 300; // Pozycja Y
+	rregister_button->Width = 100;       // Szerokoœæ przycisku (opcjonalnie)
+	rregister_button->Height = 50;       // Wysokoœæ przycisku (opcjonalnie)
+	rregister_button->OnClick = rregister_buttonClick; // Popraw zdarzenie na w³aœciwe
+	rregister_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\button2.png");
+
+	rback_button = new TImage(this);
+	rback_button->Parent = this;
+	rback_button->Position->X = 370; // Pozycja X
+	rback_button->Position->Y = 300; // Pozycja Y
+	rback_button->Width = 100;       // Szerokoœæ przycisku (opcjonalnie)
+	rback_button->Height = 50;       // Wysokoœæ przycisku (opcjonalnie)
+	rback_button->OnClick = rback_buttonClick; // Popraw zdarzenie na w³aœciwe
+	rback_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\button2.png");
+
+
+}
+
+void __fastcall TRegisterForm::rregister_buttonClick(TObject *Sender)
+{
+	// Po³¹czenie z baz¹ danych
+	TFDConnection *FDConnection = new TFDConnection(nullptr);
+	TFDQuery *FDQuery = new TFDQuery(nullptr);
+
+	try {
+		// Ustawienia po³¹czenia
+		FDConnection->DriverName = "SQLite";
+		FDConnection->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\uzytkownicy.db";
+		FDConnection->Connected = true;
+
+		FDQuery->Connection = FDConnection;
+
+		// Pobranie danych z pól
+		AnsiString username = r_user_edit->Text;
+		AnsiString password = r_password_edit->Text;
+		AnsiString repeatPassword = r_password_edit1->Text;
+
+		if (username.IsEmpty() || password.IsEmpty() || repeatPassword.IsEmpty()) {
+			ShowMessage("Fields cannot be empty");
+			return;
+		}
+
+		if (password != repeatPassword) {
+			ShowMessage("Passwords do not match");
+			return;
+		}
+
+		// Sprawdzenie, czy u¿ytkownik ju¿ istnieje
+		FDQuery->SQL->Text = "SELECT * FROM Users WHERE Username = :Username";
+		FDQuery->ParamByName("Username")->AsString = username;
+		FDQuery->Open();
+
+		if (!FDQuery->IsEmpty()) {
+			ShowMessage("User already exists");
+			return;
+		}
+
+		// Dodanie nowego u¿ytkownika
+		FDQuery->SQL->Text = "INSERT INTO Users (Username, Password) VALUES (:Username, :Password)";
+		FDQuery->ParamByName("Username")->AsString = username;
+		FDQuery->ParamByName("Password")->AsString = password;
+		FDQuery->ExecSQL();
+
+		ShowMessage("User registered successfully");
+		this->Close();
+	}
+	catch (const Exception &e) {
+		ShowMessage("Error during registration: " + e.Message);
+	}
+	// Sprz¹tanie
+	if (FDQuery) delete FDQuery;
+	if (FDConnection) delete FDConnection;
+}
+
+void __fastcall TRegisterForm::rback_buttonClick(TObject *Sender)
+{
+	this->Hide();
+	LoginForm->Show();
+}
+
+

@@ -1,0 +1,30 @@
+//---------------------------------------------------------------------------
+
+#ifndef MenuForm_H
+#define MenuForm_H
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+#include <FMX.Controls.Presentation.hpp>
+#include <FMX.StdCtrls.hpp>
+#include <FMX.Types.hpp>
+#include <FMX.Dialogs.hpp>
+#include <FMX.DialogService.Async.hpp>
+//---------------------------------------------------------------------------
+class TMenuForm : public TForm
+{
+__published:	// IDE-managed Components
+	void __fastcall add_buttonClick(TObject *Sender);
+	void __fastcall gallery_buttonClick(TObject *Sender);
+private:	// User declarations
+	TImage *add_button;
+	TOpenDialog *OpenDialog1;
+	TImage *gallery_button;
+public:		// User declarations
+	__fastcall TMenuForm(TComponent* Owner);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TMenuForm *MenuForm;
+//---------------------------------------------------------------------------
+#endif

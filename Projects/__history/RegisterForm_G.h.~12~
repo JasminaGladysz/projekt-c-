@@ -1,0 +1,48 @@
+//---------------------------------------------------------------------------
+//#define RegisterForm_GH
+//---------------------------------------------------------------------------
+#include <fmx.h>
+
+#include <System.Classes.hpp>          // Podstawowe klasy, np. TObject
+#include <FMX.Forms.hpp>               // TForm
+#include <FMX.Types.hpp>               // Podstawowe typy FMX
+#include <FMX.Controls.hpp>            // Komponenty wizualne, np. TEdit
+#include <FMX.Objects.hpp>             // TImage
+#include <FMX.StdCtrls.hpp>            // TLabel
+#include <FireDAC.Comp.Client.hpp>     // TFDQuery, TFDConnection
+#include <FireDAC.Comp.DataSet.hpp>
+#include <FireDAC.DApt.hpp>
+#include <FireDAC.Phys.SQLite.hpp>     // U¿ywane w po³¹czeniu z baz¹ danych SQLite
+#include <FireDAC.Stan.Error.hpp>      // Obs³uga b³êdów
+#include <FireDAC.Stan.Param.hpp>      // Parametry zapytañ SQL
+
+//---------------------------------------------------------------------------
+
+class TRegisterFormG : public TForm
+{
+__published:	// IDE-managed Components
+private:	// User declarations
+    TEdit *r_user_edit;
+    TEdit *r_password_edit;
+    TLabel *r_password_label;
+    TLabel *r_user_label;
+    TImage *rregister_button;
+    TImage *rback_button;
+    TImage *register_title;
+    TLabel *r_password_label1;
+	TEdit *r_password_edit1;
+	TFDConnection *FDConnection1;
+	TFDQuery *FDQuery1;
+
+public:		// User declarations
+	__fastcall TRegisterFormG(TComponent* Owner);
+	void __fastcall rregister_buttonClick(TObject *Sender);
+	void __fastcall rback_buttonClick(TObject *Sender);
+	void __fastcall FormResize(TObject *Sender);
+};
+
+//---------------------------------------------------------------------------
+
+extern PACKAGE TRegisterFormG *RegisterFormG;
+//---------------------------------------------------------------------------
+

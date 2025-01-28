@@ -1,0 +1,65 @@
+object RegisterForm: TRegisterForm
+  Left = 0
+  Top = 0
+  Caption = 'REGISTRATION'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object r_user_edit: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 0
+    Position.X = 336.000000000000000000
+    Position.Y = 104.000000000000000000
+  end
+  object r_password_edit: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 1
+    Position.X = 336.000000000000000000
+    Position.Y = 160.000000000000000000
+    OnChangeTracking = r_password_editChange
+  end
+  object r_password_label: TLabel
+    Position.X = 144.000000000000000000
+    Position.Y = 165.000000000000000000
+    Text = 'password:'
+    TabOrder = 2
+  end
+  object r_user_label: TLabel
+    Position.X = 144.000000000000000000
+    Position.Y = 104.000000000000000000
+    Text = 'username:'
+    TabOrder = 3
+  end
+  object rregister_button: TButton
+    Position.X = 336.000000000000000000
+    Position.Y = 296.000000000000000000
+    TabOrder = 4
+    Text = 'register me'
+    TextSettings.Trimming = None
+    OnClick = rregister_buttonClick
+  end
+  object rback_button: TButton
+    Position.X = 184.000000000000000000
+    Position.Y = 296.000000000000000000
+    TabOrder = 5
+    Text = 'back'
+    TextSettings.Trimming = None
+    OnClick = rback_buttonClick
+  end
+  object r_password_label1: TLabel
+    Position.X = 144.000000000000000000
+    Position.Y = 216.000000000000000000
+    Text = 'repeat password:'
+    TabOrder = 6
+  end
+  object r_password_edit1: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 7
+    HideSelectionOnExit = False
+    Position.X = 336.000000000000000000
+    Position.Y = 216.000000000000000000
+  end
+end

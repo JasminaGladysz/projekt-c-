@@ -1,0 +1,26 @@
+object RegisterForm: TRegisterForm
+  Left = 0
+  Top = 0
+  Caption = 'REGISTRATION'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'DriverID=SQLite'
+      
+        'Database=C:\Users\Jasmina\Documents\Embarcadero\Studio\Projects\' +
+        'uzytkownicy.db')
+    LoginPrompt = False
+    Left = 528
+    Top = 376
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    Left = 520
+    Top = 320
+  end
+end

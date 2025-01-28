@@ -1,0 +1,262 @@
+#include <fmx.h>
+#include <FMX.StdCtrls.hpp> // Zawiera TCheckBox
+#include <FMX.Forms.hpp>      // Dla TForm
+#pragma hdrstop
+
+#include "ImageForm_G.h"
+#include "MenuForm_G.h"
+#include "LoginForm_G.h"
+//---------------------------------------------------------------------------
+
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+
+TImageFormG *ImageFormG;
+//---------------------------------------------------------------------------
+
+__fastcall TImageFormG::TImageFormG(TComponent* Owner)
+	: TForm(Owner)
+{
+	this->Width = 640;
+	this->Height = 480;
+
+	this->OnResize = FormResize;
+
+	TRectangle *background = new TRectangle(this);
+	background->Parent = this;
+	background->Align = TAlignLayout::Client;
+	TAlphaColor customColor = MakeColor(152, 168, 105);
+	background->Fill->Color = customColor;
+
+	Image = new TImage(this);
+	Image->Parent = this;
+	Image->Height = 300;
+	Image->Width = 300;
+	Image->Align = TAlignLayout::None;
+	Image->Position->X = (this->Width - Image->Width) / 2;
+	Image->Position->Y = (this->Height / 4);
+
+	items_box = new TComboBox(this);
+	items_box->Parent = this;
+	items_box->Position->X = 20;
+	items_box->Position->Y = 30;
+	items_box->Items->Add("dress");
+	items_box->Items->Add("shoes");
+	items_box->Items->Add("accesories");
+	items_box->Items->Add("bag");
+	items_box->Items->Add("T-shirt");
+	items_box->Items->Add("top");
+	items_box->Items->Add("blouse");
+	items_box->Items->Add("sweater");
+	items_box->Items->Add("jacket");
+	items_box->Items->Add("jeans");
+	items_box->Items->Add("pants");
+	items_box->Items->Add("skirt");
+
+	save_button = new TImage(this);
+	save_button->Parent = this;
+	save_button->Width = 100;
+	save_button->Height = 50;
+	save_button->Visible = true;
+	save_button->OnClick = save_buttonClick;
+	save_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\save_button.png");
+	save_button->Position->X = (this->Width - save_button->Width) / 2;
+	save_button->Position->Y = Image->Position->Y + Image->Height + 100;
+
+	back_button = new TImage(this);
+	back_button->Parent = this;
+	back_button->Width = 100;
+	back_button->Height = 50;
+	back_button->Visible = true;
+	back_button->OnClick = back_buttonClick;
+	back_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\back_button.png");
+	back_button->Position->X = (this->Width - back_button->Width) / 2;
+	back_button->Position->Y = save_button->Position->Y + save_button->Height + 110;
+
+	summer = new TCheckBox(this);
+	summer->Parent = this;
+	summer->Text = "summer";
+	summer->Position->X = this->Width - summer->Width - 20;
+	summer->Position->Y = 80;
+
+	spring = new TCheckBox(this);
+	spring->Parent = this;
+	spring->Text = "spring";
+	spring->Position->X = this->Width - spring->Width - 20;
+	spring->Position->Y = 120;
+
+	fall = new TCheckBox(this);
+	fall->Parent = this;
+	fall->Text = "fall";
+	fall->Position->X = this->Width - fall->Width - 20;
+	fall->Position->Y = 160;
+
+	winter = new TCheckBox(this);
+	winter->Parent = this;
+	winter->Text = "winter";
+	winter->Position->X = this->Width - winter->Width - 20;
+	winter->Position->Y = 200;
+
+	casual = new TCheckBox(this);
+	casual->Parent = this;
+	casual->Text = "casual";
+	casual->Position->X = this->Width - casual->Width - 20;
+	casual->Position->Y = 240;
+
+	blacktie = new TCheckBox(this);
+	blacktie->Parent = this;
+	blacktie->Text = "blacktie";
+	blacktie->Position->X = this->Width - blacktie->Width - 20;
+	blacktie->Position->Y = 280;
+
+	sporty = new TCheckBox(this);
+	sporty->Parent = this;
+	sporty->Text = "sporty";
+	sporty->Position->X = this->Width - sporty->Width - 20;
+	sporty->Position->Y = 320;
+
+	party = new TCheckBox(this);
+	party->Parent = this;
+	party->Text = "party";
+	party->Position->X = this->Width - party->Width - 20;
+	party->Position->Y = 360;
+
+	user_label = new TLabel(this);
+	user_label->Parent = this;
+	user_label->Font->Size = 14;
+	user_label->Align = TAlignLayout::None;
+	user_label->Position->X = this->Width - user_label->Width - 20;
+	user_label->Position->Y = this->Height - user_label->Height - 20;
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TImageFormG::save_buttonClick(TObject *Sender)
+{
+	FDConnection2 = new TFDConnection(nullptr);
+	FDQuery2 = new TFDQuery(nullptr);
+
+	TMemoryStream *imageStream = nullptr;
+	try
+	{
+		FDConnection2->DriverName = "SQLite";
+		FDConnection2->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\szafa.db";
+		FDConnection2->Connected = true;
+
+		FDQuery2->Connection = FDConnection2;
+
+		FDQuery2->SQL->Text = "INSERT INTO szafa (PIC, SEZON, OKAZJA, RODZAJ, USERS) VALUES (:Pic, :Season, :Occasion, :Type, :User)";
+
+		TMemoryStream *imageStream = new TMemoryStream();
+
+		Image->Bitmap->SaveToStream(imageStream);
+		FDQuery2->ParamByName("Pic")->LoadFromStream(imageStream, ftBlob);
+	}
+	__finally
+	{
+		delete imageStream;
+	}
+
+	// SEZON
+	int season = 0;
+	if (!spring->IsChecked && !summer->IsChecked && !fall->IsChecked && !winter->IsChecked) {
+		ShowMessage("Nic nie zosta³o wybrane dla sezonu.");
+		return;
+	}
+
+	if (spring->IsChecked) season += 1;
+	if (summer->IsChecked) season += 2;
+	if (fall->IsChecked) season += 4;
+	if (winter->IsChecked) season += 8;
+
+	// OKAZJE
+	int occasion = 0;
+	if (!casual->IsChecked && !blacktie->IsChecked && !party->IsChecked && !sporty->IsChecked) {
+		ShowMessage("Nic nie zosta³o wybrane dla okazji.");
+		return;
+	}
+
+	if (casual->IsChecked) occasion += 1;
+	if (blacktie->IsChecked) occasion += 2;
+	if (party->IsChecked) occasion += 4;
+	if (sporty->IsChecked) occasion += 8;
+
+	// RODZAJ
+	AnsiString selecteditem = items_box->Text;
+	if (selecteditem.IsEmpty()) {
+		ShowMessage("Nic nie zosta³o wybrane dla rodzaju.");
+		return;
+	} else {
+		FDQuery2->ParamByName("Type")->AsString = selecteditem;
+	}
+
+	FDQuery2->ParamByName("Season")->AsInteger = season;
+	FDQuery2->ParamByName("Occasion")->AsInteger = occasion;
+
+	FDQuery2->ParamByName("User")->AsString = loggedUser;
+
+    try {
+        FDQuery2->ExecSQL();
+
+		ShowMessage("SAVED!");
+
+        this->Close();
+    } catch (const Exception &e) {
+        ShowMessage("Wyst¹pi³ b³¹d podczas zapisu: " + e.Message);
+    }
+}
+
+void __fastcall TImageFormG::back_buttonClick(TObject *Sender)
+{
+	this->Close();
+	MenuFormG->Show();
+}
+
+void __fastcall TImageFormG::FormResize(TObject *Sender)
+{
+	// Image
+	Image->Position->X = (this->Width - Image->Width) / 2;
+	Image->Position->Y = (this->Height / 4);
+
+	// ComboBox
+	items_box->Position->X = 20;
+	items_box->Position->Y = 30;
+
+	// Save button i back button (po lewej stronie, ale ni¿ej)
+	save_button->Position->X = 20;
+	save_button->Position->Y = this->Height - save_button->Height - 100;
+
+	back_button->Position->X = 20;
+	back_button->Position->Y = save_button->Position->Y + save_button->Height + 10;
+
+	// Season checkboxes (ni¿ej na osi Y)
+	summer->Position->X = this->Width - summer->Width - 20;
+	summer->Position->Y = 120;
+
+	spring->Position->X = this->Width - spring->Width - 20;
+	spring->Position->Y = summer->Position->Y + summer->Height + 10;
+
+	fall->Position->X = this->Width - fall->Width - 20;
+	fall->Position->Y = spring->Position->Y + spring->Height + 10;
+
+	winter->Position->X = this->Width - winter->Width - 20;
+	winter->Position->Y = fall->Position->Y + fall->Height + 10;
+
+	// Okacja checkboxes (ni¿ej na osi Y)
+	casual->Position->X = this->Width - casual->Width - 20;
+	casual->Position->Y = winter->Position->Y + winter->Height + 20;
+
+	blacktie->Position->X = this->Width - blacktie->Width - 20;
+	blacktie->Position->Y = casual->Position->Y + casual->Height + 10;
+
+	sporty->Position->X = this->Width - sporty->Width - 20;
+	sporty->Position->Y = blacktie->Position->Y + blacktie->Height + 10;
+
+	party->Position->X = this->Width - party->Width - 20;
+	party->Position->Y = sporty->Position->Y + sporty->Height + 10;
+
+	// User label (pozostaje przy dolnej krawêdzi)
+	user_label->Position->X = this->Width - user_label->Width - 20;
+	user_label->Position->Y = this->Height - user_label->Height - 20;
+}
+

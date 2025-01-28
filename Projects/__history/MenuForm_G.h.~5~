@@ -1,0 +1,34 @@
+//---------------------------------------------------------------------------
+
+#ifndef MenuForm_GH
+#define MenuForm_GH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+#include <FMX.Controls.Presentation.hpp>
+#include <FMX.StdCtrls.hpp>
+#include <FMX.Types.hpp>
+#include <FMX.Dialogs.hpp>
+#include <FMX.DialogService.Async.hpp>
+//---------------------------------------------------------------------------
+class TMenuFormG : public TForm
+{
+__published:	// IDE-managed Components
+
+private:	// User declarations
+	TImage *add_button;
+	TOpenDialog *OpenDialog1;
+	TImage *gallery_button;
+	TImage *menu_title;
+public:		// User declarations
+	__fastcall TMenuFormG(TComponent* Owner);
+	void __fastcall add_buttonClick(TObject *Sender);
+	void __fastcall gallery_buttonClick(TObject *Sender);
+	void __fastcall FormResize(TObject *Sender);
+	TLabel *user_label;
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TMenuFormG *MenuFormG;
+//---------------------------------------------------------------------------
+#endif

@@ -1,0 +1,34 @@
+object LoginForm: TLoginForm
+  Left = 0
+  Top = 0
+  Caption = 'LOGIN'
+  ClientHeight = 346
+  ClientWidth = 492
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object login_info: TLabel
+    Position.X = 176.000000000000000000
+    Position.Y = 206.000000000000000000
+    Size.Width = 177.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    Left = 444
+    Top = 230
+  end
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'DriverID=SQLite'
+      
+        'Database=C:\Users\Jasmina\Documents\Embarcadero\Studio\Projects\' +
+        'uzytkownicy.db')
+    LoginPrompt = False
+    Left = 444
+    Top = 286
+  end
+end

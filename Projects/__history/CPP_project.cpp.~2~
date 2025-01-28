@@ -1,0 +1,41 @@
+//---------------------------------------------------------------------------
+
+#include <fmx.h>
+#ifdef _WIN32
+#include <tchar.h>
+#endif
+#pragma hdrstop
+#include <System.StartUpCopy.hpp>
+//---------------------------------------------------------------------------
+USEFORM("RegisterForm_.cpp", RegisterForm);
+USEFORM("LoginForm_.cpp", LoginForm);
+USEFORM("MenuForm_.cpp", MenuForm);
+//---------------------------------------------------------------------------
+extern "C" int FMXmain()
+{
+	try
+	{
+		Application->Initialize();
+		Application->CreateForm(__classid(TLoginForm), &LoginForm);
+		Application->CreateForm(__classid(TRegisterForm), &RegisterForm);
+		Application->CreateForm(__classid(TMenuForm), &MenuForm);
+		Application->Run();
+	}
+	catch (Exception &exception)
+	{
+		Application->ShowException(&exception);
+	}
+	catch (...)
+	{
+		try
+		{
+			throw Exception("");
+		}
+		catch (Exception &exception)
+		{
+			Application->ShowException(&exception);
+		}
+	}
+	return 0;
+}
+//---------------------------------------------------------------------------

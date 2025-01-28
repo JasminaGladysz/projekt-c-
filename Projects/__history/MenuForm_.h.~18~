@@ -1,0 +1,32 @@
+//---------------------------------------------------------------------------
+
+#ifndef MenuForm_H
+#define MenuForm_H
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+#include <FMX.Controls.Presentation.hpp>
+#include <FMX.StdCtrls.hpp>
+#include <FMX.Types.hpp>
+#include <FMX.Objects.hpp>
+//---------------------------------------------------------------------------
+class TMenuForm : public TForm
+{
+__published:	// IDE-managed Components
+	TButton *add_button;
+
+	void __fastcall add_buttonClick(TObject *Sender);
+private:	// User declarations
+	String filePath;
+public:		// User declarations
+	__fastcall TMenuForm(TComponent* Owner);
+
+	void SetFilePath(const String &path);
+};
+
+//---------------------------------------------------------------------------
+extern PACKAGE TMenuForm *MenuForm;
+//---------------------------------------------------------------------------
+#endif
+

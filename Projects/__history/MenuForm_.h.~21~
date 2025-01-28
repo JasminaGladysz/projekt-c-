@@ -1,0 +1,20 @@
+//---------------------------------------------------------------------------
+
+#ifndef MenuForm_H
+#define MenuForm_H
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+//---------------------------------------------------------------------------
+class TMenuForm : public TForm
+{
+__published:	// IDE-managed Components
+private:	// User declarations
+public:		// User declarations
+	__fastcall TMenuForm(TComponent* Owner);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TMenuForm *MenuForm;
+//---------------------------------------------------------------------------
+#endif

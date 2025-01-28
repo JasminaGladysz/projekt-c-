@@ -1,0 +1,37 @@
+//---------------------------------------------------------------------------
+
+#ifndef ItemForm_H
+#define ItemForm_H
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+//---------------------------------------------------------------------------
+class TItemForm : public TForm
+{
+__published:
+    void __fastcall editButtonClick(TObject *Sender);
+	void __fastcall saveButtonClick(TObject *Sender);
+private:
+	TImage *ImageDisplay;
+	TButton *editButton;
+	TButton *saveButton;
+	TCheckBox *SpringBox;
+	TCheckBox *SummerBox;
+    TCheckBox *FallBox;
+	TCheckBox *WinterBox;
+	TComboBox *ItemTypeBox;
+
+
+	TFDQuery *FDQuery1;
+
+public:
+	__fastcall TItemForm(TComponent* Owner);
+	void LoadImage(const String &imagePath);
+	void LoadFormData();
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TItemForm *ItemForm;
+//---------------------------------------------------------------------------
+#endif
+

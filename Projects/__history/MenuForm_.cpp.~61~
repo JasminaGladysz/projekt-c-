@@ -1,0 +1,52 @@
+#include <fmx.h>
+#include <fmx.Controls.hpp>
+#include <fmx.Forms.hpp>
+#include <fmx.Dialogs.hpp>
+#include <fmx.Graphics.hpp>
+#pragma hdrstop
+
+#include "MenuForm_.h"
+#include "ImageForm_.h"
+#include "GalleryForm_.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TMenuForm *MenuForm;
+//---------------------------------------------------------------------------
+__fastcall TMenuForm::TMenuForm(TComponent* Owner)
+	: TForm(Owner)
+{
+
+   ImageForm = new TImageForm(Application);          //obiekt formularza ImageForm
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::add_buttonClick(TObject *Sender)
+{
+	//wybór pliku
+    TOpenDialog *OpenDialog = new TOpenDialog(this);
+
+    OpenDialog->Filter = "Obrazy (*.jpg;*.jpeg;*.bmp;*.png)|*.jpg;*.jpeg;*.bmp;*.png";
+    OpenDialog->DefaultExt = "jpg";
+
+	//po wybraniu pliku nowy formularz
+    if (OpenDialog->Execute())
+	{
+        ImageForm->Image->Bitmap->LoadFromFile(OpenDialog->FileName);
+
+
+		this->Hide();
+		ImageForm->ShowModal();
+		this->Show();
+    }
+
+    delete OpenDialog;
+}
+
+void __fastcall TMenuForm::gallery_buttonClick(TObject *Sender)
+{
+	MenuForm->Hide();
+	GalleryForm->Show();
+}
+//---------------------------------------------------------------------------
+

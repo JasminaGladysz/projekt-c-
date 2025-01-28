@@ -1,0 +1,34 @@
+//---------------------------------------------------------------------------
+
+#include <fmx.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TForm1 *Form1;
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+	: TForm(Owner)
+{    this->Width = 700;
+	this->Height = 424;
+
+    	FlakeImage = new TImage(this);
+	FlakeImage->Parent = this;
+	FlakeImage->Position->X = 100;
+	FlakeImage->Position->Y = 100;
+	FlakeImage->Width = 50;
+	FlakeImage->Height = 50;
+	FlakeImage->Visible = true;
+    FlakeImage->BringToFront();
+	//FlakeImage->WrapMode = TImageWrapMode::Fit;
+	FlakeImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\summer.jpg");
+
+    BackgroundImage = new TImage(this);
+	BackgroundImage->Parent = this;
+    BackgroundImage->Align = TAlignLayout::Client;
+	BackgroundImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\pobierz.jpg");  // Za³adowanie obrazu
+	BackgroundImage->SendToBack();
+}
+//---------------------------------------------------------------------------

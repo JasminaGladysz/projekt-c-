@@ -1,0 +1,293 @@
+#include <fmx.h>
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Phys.SQLite.hpp>
+#include <System.IOUtils.hpp>
+
+#pragma hdrstop
+#include "ItemForm_G.h"
+
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+
+TItemFormG *ItemFormG;
+
+__fastcall TItemFormG::TItemFormG(TComponent* Owner, int id)
+	: TForm(Owner), dispID(id)
+{
+	this->Width = 640;
+	this->Height = 480;
+
+	TRectangle *background = new TRectangle(this);
+	background->Parent = this;
+	background->Align = TAlignLayout::Client;
+	TAlphaColor customColor = MakeColor(152, 168, 105);
+	background->Fill->Color = customColor;
+
+	ImageDisplay = new TImage(this);
+	ImageDisplay->Parent = this;
+    ImageDisplay->Height = 300;
+	ImageDisplay->Width = 300;
+	ImageDisplay->Align = TAlignLayout::Center;
+	ImageDisplay->WrapMode = TImageWrapMode::Fit;
+
+    editButton = new TButton(this);
+    editButton->Parent = this;
+    editButton->Text = "Edit";
+	editButton->Position->X = 310;
+	editButton->Position->Y = 350;
+	editButton->OnClick = editButtonClick;
+
+	deleteButton = new TButton(this);
+	deleteButton->Parent = this;
+	deleteButton->Text = "Delete";
+	deleteButton->Position->X = 410;
+	deleteButton->Position->Y = 350;
+	deleteButton->Visible = false;
+	deleteButton->OnClick = deleteButtonClick;
+
+    saveButton = new TButton(this);
+	saveButton->Parent = this;
+	saveButton->Text = "Save";
+	saveButton->Position->X = 310;
+	saveButton->Position->Y = 350;
+	saveButton->Visible = false;
+    saveButton->OnClick = saveButtonClick;
+
+	FDQuery1 = new TFDQuery(this);
+
+	DataInfo();
+	LoadFormData();
+}
+
+void TItemFormG::DataInfo()
+{
+    // Checkboxy dla sezonów
+    SpringBox = new TCheckBox(this);
+    SpringBox->Parent = this;
+    SpringBox->Text = "Spring";
+    SpringBox->Position->X = 40;
+    SpringBox->Position->Y = 50;
+    SpringBox->Enabled = false;
+
+    SummerBox = new TCheckBox(this);
+    SummerBox->Parent = this;
+    SummerBox->Text = "Summer";
+    SummerBox->Position->X = 40;
+    SummerBox->Position->Y = 70;
+    SummerBox->Enabled = false;
+
+    FallBox = new TCheckBox(this);
+    FallBox->Parent = this;
+    FallBox->Text = "Fall";
+    FallBox->Position->X = 40;
+    FallBox->Position->Y = 90;
+    FallBox->Enabled = false;
+
+    WinterBox = new TCheckBox(this);
+    WinterBox->Parent = this;
+    WinterBox->Text = "Winter";
+    WinterBox->Position->X = 40;
+    WinterBox->Position->Y = 110;
+    WinterBox->Enabled = false;
+
+    // Checkboxy dla okazji
+    CasualBox = new TCheckBox(this);
+    CasualBox->Parent = this;
+    CasualBox->Text = "Casual";
+    CasualBox->Position->X = 40;
+    CasualBox->Position->Y = 160;
+    CasualBox->Enabled = false;
+
+    BlackTieBox = new TCheckBox(this);
+    BlackTieBox->Parent = this;
+    BlackTieBox->Text = "Black Tie";
+    BlackTieBox->Position->X = 40;
+    BlackTieBox->Position->Y = 180;
+    BlackTieBox->Enabled = false;
+
+    PartyBox = new TCheckBox(this);
+    PartyBox->Parent = this;
+    PartyBox->Text = "Party";
+    PartyBox->Position->X = 40;
+    PartyBox->Position->Y = 200;
+    PartyBox->Enabled = false;
+
+    SportyBox = new TCheckBox(this);
+    SportyBox->Parent = this;
+    SportyBox->Text = "Sporty";
+    SportyBox->Position->X = 40;
+    SportyBox->Position->Y = 220;
+    SportyBox->Enabled = false;
+
+    // ComboBox dla rodzaju przedmiotu
+    ComboBox = new TComboBox(this);
+    ComboBox->Parent = this;
+    ComboBox->Position->X = 460;
+    ComboBox->Position->Y = 100;
+    ComboBox->Enabled = false;
+}
+
+
+void TItemFormG::LoadImage(const String &imagePath)
+{
+  ImageDisplay->Bitmap->LoadFromFile(imagePath);
+}
+
+// £adowanie danych z bazy
+void TItemFormG::LoadFormData()
+{
+    TFDConnection *FDConnection = new TFDConnection(nullptr);
+
+    try {
+		//po³¹czenie z baz¹ danych
+        FDConnection->DriverName = "SQLite";
+        FDConnection->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\szafa.db";
+        FDConnection->Connected = true;
+
+		FDQuery1->Connection = FDConnection;
+		FDQuery1->SQL->Text = "SELECT ID, SEZON, OKAZJA, RODZAJ FROM szafa WHERE ID = :ID";
+		FDQuery1->ParamByName("ID")->AsInteger = dispID ;
+
+		FDQuery1->Open();
+
+		if (!FDQuery1->Eof) {
+			int id = FDQuery1->FieldByName("ID")->AsInteger;
+			int sezon = FDQuery1->FieldByName("SEZON")->AsInteger;
+			int okazja = FDQuery1->FieldByName("OKAZJA")->AsInteger;
+            String rodzaj = FDQuery1->FieldByName("RODZAJ")->AsString;
+
+			SpringBox->IsChecked = (sezon & 1) != 0;
+			SummerBox->IsChecked = (sezon & 2) != 0;
+			FallBox->IsChecked = (sezon & 4) != 0;
+            WinterBox->IsChecked = (sezon & 8) != 0;
+
+            CasualBox->IsChecked = (okazja & 1) != 0;
+            BlackTieBox->IsChecked = (okazja & 2) != 0;
+            PartyBox->IsChecked = (okazja & 4) != 0;
+			SportyBox->IsChecked = (okazja & 8) != 0;
+
+
+			ComboBox->Items->Add(rodzaj);
+			ComboBox->ItemIndex = 0;
+			ComboBox->Items->Add("dress");
+			ComboBox->Items->Add("shoes");
+			ComboBox->Items->Add("accesories");
+			ComboBox->Items->Add("bag");
+			ComboBox->Items->Add("T-shirt");
+			ComboBox->Items->Add("top");
+			ComboBox->Items->Add("blouse");
+			ComboBox->Items->Add("sweater");
+			ComboBox->Items->Add("jacket");
+			ComboBox->Items->Add("jeans");
+			ComboBox->Items->Add("pants");
+			ComboBox->Items->Add("skirt");
+
+
+        }
+    } catch (Exception &e) {
+        ShowMessage("B³¹d po³¹czenia z baz¹ danych: " + e.Message);
+    }
+
+	delete FDConnection;
+}
+
+void __fastcall TItemFormG::editButtonClick(TObject *Sender)
+{
+	// w³¹czamm mo¿liwoœæ edycji
+    SpringBox->Enabled = true;
+    SummerBox->Enabled = true;
+    FallBox->Enabled = true;
+    WinterBox->Enabled = true;
+
+    CasualBox->Enabled = true;
+    BlackTieBox->Enabled = true;
+    PartyBox->Enabled = true;
+    SportyBox->Enabled = true;
+
+    ComboBox->Enabled = true;
+
+    editButton->Visible = false;
+	saveButton->Visible = true;
+    deleteButton->Visible = true;
+}
+
+//deletebutton
+void __fastcall TItemFormG::deleteButtonClick(TObject *Sender)
+{
+	TFDConnection *FDConnection = new TFDConnection(nullptr);
+
+	try {
+		FDConnection->DriverName = "SQLite";
+		FDConnection->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\szafa.db";
+		FDConnection->Connected = true;
+
+		FDQuery1->Connection = FDConnection;
+		FDQuery1->SQL->Text = "DELETE FROM szafa WHERE ID = :ID";
+		FDQuery1->ParamByName("ID")->AsInteger = dispID;
+
+		FDQuery1->ExecSQL();
+
+		ShowMessage("Item deleted successfully!");
+
+		this->Close(); // Zamykamy formularz po usuniêciu elementu
+	} catch (Exception &e) {
+		ShowMessage("Error while deleting item: " + e.Message);
+	}
+
+	delete FDConnection;
+}
+
+// zapisuje
+void __fastcall TItemFormG::saveButtonClick(TObject *Sender)
+{
+    TFDConnection *FDConnection = new TFDConnection(nullptr);
+
+    try {
+        FDConnection->DriverName = "SQLite";
+        FDConnection->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\szafa.db";
+        FDConnection->Connected = true;
+
+        FDQuery1->Connection = FDConnection;
+        FDQuery1->SQL->Text = "UPDATE szafa SET SEZON = :Season, OKAZJA = :Occasion, RODZAJ = :Type WHERE ID = :ID";
+        FDQuery1->ParamByName("ID")->AsInteger = dispID;
+
+
+        int sezon = (SpringBox->IsChecked ? 1 : 0) |
+                    (SummerBox->IsChecked ? 2 : 0) |
+                    (FallBox->IsChecked ? 4 : 0) |
+                    (WinterBox->IsChecked ? 8 : 0);
+
+        int okazja = (CasualBox->IsChecked ? 1 : 0) |
+                     (BlackTieBox->IsChecked ? 2 : 0) |
+                     (PartyBox->IsChecked ? 4 : 0) |
+                     (SportyBox->IsChecked ? 8 : 0);
+
+        FDQuery1->ParamByName("Season")->AsInteger = sezon;
+        FDQuery1->ParamByName("Occasion")->AsInteger = okazja;
+        FDQuery1->ParamByName("Type")->AsString = ComboBox->Text;
+
+        FDQuery1->ExecSQL();
+        ShowMessage("Zapisano zmiany!");
+    } catch (Exception &e) {
+        ShowMessage("B³¹d zapisu do bazy danych: " + e.Message);
+    }
+
+	delete FDConnection;
+
+	// wy³¹czam edytowanie po kliknieciu save
+    SpringBox->Enabled = false;
+    SummerBox->Enabled = false;
+    FallBox->Enabled = false;
+    WinterBox->Enabled = false;
+
+    CasualBox->Enabled = false;
+    BlackTieBox->Enabled = false;
+    PartyBox->Enabled = false;
+    SportyBox->Enabled = false;
+
+    ComboBox->Enabled = false;
+
+    saveButton->Visible = false;
+	editButton->Visible = true;
+}
+

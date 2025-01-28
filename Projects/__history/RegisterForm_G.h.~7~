@@ -1,0 +1,61 @@
+//---------------------------------------------------------------------------
+#define RegisterForm_GH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>          // Podstawowe klasy, np. TObject
+#include <FMX.Forms.hpp>               // TForm
+#include <FMX.Types.hpp>               // Podstawowe typy FMX
+#include <FMX.Controls.hpp>            // Komponenty wizualne, np. TEdit
+#include <FMX.Objects.hpp>             // TImage
+#include <FMX.StdCtrls.hpp>            // TLabel
+#include <Data.DB.hpp>                 // Typy bazy danych
+#include <FireDAC.Comp.Client.hpp>     // TFDQuery, TFDConnection
+#include <FireDAC.Comp.DataSet.hpp>
+#include <FireDAC.DApt.hpp>
+#include <FireDAC.DApt.Intf.hpp>
+#include <FireDAC.DatS.hpp>
+#include <FireDAC.FMXUI.Wait.hpp>
+#include <FireDAC.Phys.hpp>
+#include <FireDAC.Phys.Intf.hpp>
+#include <FireDAC.Phys.SQLite.hpp>
+#include <FireDAC.Phys.SQLiteDef.hpp>
+#include <FireDAC.Phys.SQLiteWrapper.Stat.hpp>
+#include <FireDAC.Stan.Async.hpp>
+#include <FireDAC.Stan.Def.hpp>
+#include <FireDAC.Stan.Error.hpp>
+#include <FireDAC.Stan.ExprFuncs.hpp>
+#include <FireDAC.Stan.Intf.hpp>
+#include <FireDAC.Stan.Option.hpp>
+#include <FireDAC.Stan.Param.hpp>
+#include <FireDAC.Stan.Pool.hpp>
+#include <FireDAC.UI.Intf.hpp>
+#include <FMX.Controls.Presentation.hpp>
+#include <FMX.Edit.hpp>    // Obs³uga dataset FireDAC
+
+//---------------------------------------------------------------------------
+class TRegisterFormG : public TForm
+{
+__published:	// IDE-managed Components
+private:	// User declarations
+    TEdit *r_user_edit;
+    TEdit *r_password_edit;
+    TLabel *r_password_label;
+    TLabel *r_user_label;
+    TImage *rregister_button;
+	TImage *rback_button;
+	TImage *register_title;
+    TLabel *r_password_label1;
+    TEdit *r_password_edit1;
+	TFDConnection *FDConnection1;  // Komponent do po³¹czenia
+	TFDQuery *FDQuery1;            // Komponent do zapytañ
+
+public:		// User declarations
+	__fastcall TRegisterFormG(TComponent* Owner);
+	void __fastcall rregister_buttonClick(TObject *Sender);
+	void __fastcall rback_buttonClick(TObject *Sender);
+	void __fastcall r_password_editChange(TObject *Sender);
+};
+
+//---------------------------------------------------------------------------
+extern PACKAGE TRegisterFormG *RegisterFormG;
+//---------------------------------------------------------------------------
+

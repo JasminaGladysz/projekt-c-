@@ -1,0 +1,32 @@
+//---------------------------------------------------------------------------
+
+#ifndef LoginFormH
+#define LoginFormH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+//---------------------------------------------------------------------------
+class TLoginForm : public TForm
+{
+__published:	// IDE-managed Components
+	void __fastcall account_buttonClick(TObject *Sender); // Obs³uga przycisku tworzenia konta
+	void __fastcall login_buttonClick(TObject *Sender);
+
+private:	// Deklaracje prywatne
+	TImage *BackgroundImage;        // T³o okna
+	TImage *login_button;           // Przycisk logowania jako obraz
+	TImage *account_button;         // Przycisk tworzenia konta jako obraz
+	TEdit *login;                   // Pole loginu
+	TEdit *password;                // Pole has³a
+	TLabel *login_info;
+	TFDQuery *FDQuery;             // Zapytanie do bazy danych
+	TFDConnection *FDConnection;   // Po³¹czenie z baz¹ danych
+
+public:		// Deklaracje publiczne
+	__fastcall TLoginForm(TComponent* Owner); // Konstruktor
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TLoginForm *LoginForm;
+//---------------------------------------------------------------------------
+#endif

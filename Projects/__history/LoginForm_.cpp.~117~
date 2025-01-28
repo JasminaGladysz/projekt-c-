@@ -1,0 +1,130 @@
+﻿//---------------------------------------------------------------------------
+
+#include <fmx.h>
+#include <FMX.Graphics.hpp>
+#pragma hdrstop
+
+#include "LoginForm_.h"
+#include "RegisterForm_.h"
+#include "MenuForm_.h"
+//---------------------------------------------------------------------------
+
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+TLoginForm *LoginForm;
+//---------------------------------------------------------------------------
+
+__fastcall TLoginForm::TLoginForm(TComponent* Owner)
+	: TForm(Owner)
+{
+    this->Width = 700;
+	this->Height = 424;
+
+    BackgroundImage = new TImage(this);
+	BackgroundImage->Parent = this;
+    BackgroundImage->Align = TAlignLayout::Client;
+	BackgroundImage->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\pobierz.jpg");  // Załadowanie obrazu
+	BackgroundImage->SendToBack();
+
+	login = new TEdit(this);
+	login->Parent = this;
+	login->Position->X = 350;
+	login->Position->Y = 150;
+	login->Width = 150;
+	login->Height = 20;
+
+	password = new TEdit(this);
+	password->Parent = this;
+	password->Position->X = 350;
+	password->Position->Y = 190;
+	password->Width = 150;
+	password->Height = 20;
+	password->Password = true;
+
+	login_button = new TImage(this);
+	login_button->Parent = this;
+	login_button->Position->X = 320;
+	login_button->Position->Y = 230;
+	login_button->OnClick = login_buttonClick;
+	login_button->Align = TAlignLayout::Center;
+	login_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\button1.png");
+
+	account_button = new TImage(this);
+	account_button->Parent = this;
+	account_button->Position->X = 370;
+	account_button->Position->Y = 500;
+	account_button->OnClick = login_buttonClick;
+	account_button->Align = TAlignLayout::Center;
+	account_button->Bitmap->LoadFromFile("C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\pic\\button2.png");
+
+	login_info = new TLabel(this);
+	login_info->Parent = this;
+	login_info->Position->X = 350;
+	login_info->Position->Y = 250;
+	login_info->Text = "";
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TLoginForm::account_buttonClick(TObject *Sender)
+{
+    LoginForm->Hide();
+	RegisterForm->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TLoginForm::login_buttonClick(TObject *Sender)
+{
+	// Połączenie z bazą danych
+	TFDConnection *FDConnection = new TFDConnection(nullptr);
+	TFDQuery *FDQuery = new TFDQuery(nullptr);
+
+	try {
+		// Ustawienia połączenia
+		FDConnection->DriverName = "SQLite";
+		FDConnection->Params->Database = "C:\\Users\\Jasmina\\Documents\\Embarcadero\\Studio\\Projects\\uzytkownicy.db";
+		FDConnection->Connected = true;
+
+		FDQuery->Connection = FDConnection;
+
+		// Pobranie danych z pól
+		AnsiString inputUsername = login->Text;
+		AnsiString inputPassword = password->Text;
+
+		if (inputUsername.IsEmpty() || inputPassword.IsEmpty()) {
+			login_info->Text = "Fields cannot be empty";
+			return;
+		}
+
+		// Przygotowanie zapytania
+		FDQuery->SQL->Text = "SELECT Password FROM Users WHERE Username = :Username";
+		FDQuery->ParamByName("Username")->AsString = inputUsername;
+
+		// Wykonanie zapytania
+		FDQuery->Open();
+
+		if (!FDQuery->IsEmpty()) {
+			AnsiString storedPassword = FDQuery->FieldByName("Password")->AsString;
+
+			// Porównanie haseł
+			if (storedPassword == inputPassword) {
+				login_info->Text = "Success";
+				this->Hide();
+				MenuForm->Show();
+			} else {
+				login_info->Text = "Wrong password";
+			}
+		} else {
+			login_info->Text = "User not found";
+		}
+	}
+	catch (const Exception &e) {
+		login_info->Text = "Error: " + e.Message;
+	}
+	// Sprzątanie
+	if (FDQuery) delete FDQuery;
+	if (FDConnection) delete FDConnection;
+}
+//---------------------------------------------------------------------------
+
+

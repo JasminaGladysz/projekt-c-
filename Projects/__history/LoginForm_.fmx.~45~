@@ -1,0 +1,43 @@
+object LoginForm: TLoginForm
+  Left = 0
+  Top = 0
+  Caption = 'LOGIN'
+  ClientHeight = 346
+  ClientWidth = 492
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object password_edit: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 0
+    Position.X = 229.000000000000000000
+    Position.Y = 141.000000000000000000
+    Size.Width = 148.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object login_info: TLabel
+    Position.X = 176.000000000000000000
+    Position.Y = 206.000000000000000000
+    Size.Width = 177.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    Left = 444
+    Top = 230
+  end
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'DriverID=SQLite'
+      
+        'Database=C:\Users\Jasmina\Documents\Embarcadero\Studio\Projects\' +
+        'uzytkownicy.db')
+    LoginPrompt = False
+    Left = 444
+    Top = 286
+  end
+end

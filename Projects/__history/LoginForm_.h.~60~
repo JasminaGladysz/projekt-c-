@@ -1,0 +1,40 @@
+//---------------------------------------------------------------------------
+
+#ifndef LoginForm_H
+#define LoginForm_H
+//---------------------------------------------------------------------------
+
+#include <System.Classes.hpp>          // Podstawowe klasy, np. TObject
+#include <FMX.Forms.hpp>               // TForm
+#include <FMX.Types.hpp>               // Podstawowe typy FMX
+#include <FMX.Controls.hpp>            // Komponenty wizualne, np. TEdit
+#include <FMX.Objects.hpp>             // TImage
+#include <FMX.StdCtrls.hpp>            // TLabel
+#include <Data.DB.hpp>                 // Typy bazy danych
+#include <FireDAC.Comp.Client.hpp>     // TFDQuery, TFDConnection
+#include <FireDAC.Comp.DataSet.hpp>    // Obs³uga dataset FireDAC
+class TLoginForm : public TForm
+{
+__published:	// IDE-managed Components
+    TImage *BackgroundImage;        // T³o okna
+    TEdit *login;                   // Pole loginu
+    TEdit *password;                // Pole has³a
+    TLabel *login_info;             // Informacje o logowaniu
+    TImage *login_button;           // Przycisk logowania jako obraz
+    TImage *account_button;         // Przycisk tworzenia konta jako obraz
+    TFDQuery *FDQuery1;             // Zapytanie do bazy danych
+    TFDConnection *FDConnection1;   // Po³¹czenie z baz¹ danych
+
+    void __fastcall account_buttonClick(TObject *Sender); // Obs³uga przycisku tworzenia konta
+    void __fastcall login_buttonClick(TObject *Sender);   // Obs³uga przycisku logowania
+
+private:	// Deklaracje prywatne
+
+public:		// Deklaracje publiczne
+	__fastcall TLoginForm(TComponent* Owner); // Konstruktor
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TLoginForm *LoginForm;
+//---------------------------------------------------------------------------
+#endif
+

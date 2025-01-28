@@ -1,0 +1,22 @@
+//---------------------------------------------------------------------------
+
+#ifndef ItemForm_H
+#define ItemForm_H
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+//---------------------------------------------------------------------------
+class TItemForm : public TForm
+{
+__published:	// IDE-managed Components
+private:	// User declarations
+public:
+
+	__fastcall TItemForm(TComponent* Owner);
+	void LoadImage(const String &imagePath);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TItemForm *ItemForm;
+//---------------------------------------------------------------------------
+#endif

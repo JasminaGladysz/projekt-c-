@@ -1,0 +1,12 @@
+object LoginForm: TLoginForm
+  Left = 0
+  Top = 0
+  Caption = 'LOGIN'
+  ClientHeight = 346
+  ClientWidth = 492
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+end

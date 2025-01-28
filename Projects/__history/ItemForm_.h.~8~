@@ -1,0 +1,50 @@
+//---------------------------------------------------------------------------
+
+#ifndef ItemForm_H
+#define ItemForm_H
+//---------------------------------------------------------------------------
+
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+#include <FMX.StdCtrls.hpp>
+#include <FMX.ListBox.hpp>
+#include <FireDAC.Comp.Client.hpp>
+//---------------------------------------------------------------------------
+
+class TItemForm : public TForm
+{
+__published:
+    void __fastcall editButtonClick(TObject *Sender);
+    void __fastcall saveButtonClick(TObject *Sender);
+
+private:
+    int dispID;
+    // Elementy UI
+    TImage *ImageDisplay;
+    TButton *editButton;
+    TButton *saveButton;
+    TCheckBox *SpringBox;
+    TCheckBox *SummerBox;
+    TCheckBox *FallBox;
+    TCheckBox *WinterBox;
+    TCheckBox *CasualBox;     // Checkbox dla Casual
+    TCheckBox *BlackTieBox;   // Checkbox dla Black Tie
+    TCheckBox *PartyBox;      // Checkbox dla Party
+    TCheckBox *SportyBox;     // Checkbox dla Sporty
+    TComboBox *ItemTypeBox;
+
+    // Po³¹czenie z baz¹ danych
+    TFDQuery *FDQuery1;
+
+public:
+    __fastcall TItemForm(TComponent* Owner, int id);
+    void LoadImage(const String &imagePath);
+    void LoadFormData();
+};
+
+//---------------------------------------------------------------------------
+extern PACKAGE TItemForm *ItemForm;
+//---------------------------------------------------------------------------
+#endif
+

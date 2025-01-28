@@ -1,0 +1,62 @@
+#ifndef GalleryForm_H
+#define GalleryForm_H
+//---------------------------------------------------------------------------
+
+#include <System.Classes.hpp>
+#include <FMX.Controls.hpp>
+#include <FMX.Forms.hpp>
+#include <FMX.Objects.hpp>
+#include <FMX.Types.hpp>
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Phys.SQLite.hpp>
+#include <System.IOUtils.hpp>
+#include <map>
+
+#pragma hdrstop
+#include "GalleryForm_.h"
+
+//---------------------------------------------------------------------------
+
+class TGalleryForm : public TForm
+{
+__published:	// IDE-managed Components:
+private:	// User declarations
+	int dispId;
+	std::map<int, String> imageMap;
+	TButton *nextButton;
+	TButton *prevButton;
+    TButton *filterButton;
+	TCheckBox *SummerBox;
+	TCheckBox *SpringBox;
+	TCheckBox *FallBox;
+	TCheckBox *WinterBox;
+	TCheckBox *CasualBox;
+	TCheckBox *BlackTieBox;
+	TCheckBox *SportyBox;
+	TCheckBox *PartyBox;
+    TImage *BackgroundImage;
+    TImage *SunImage;
+    TImage *FlowerImage;
+    TImage *LeafImage;
+	TImage *FlakeImage;
+	TImage *CasualImage;
+	TImage *BlackTieImage;
+	TImage *SportyImage;
+	TImage *PartyImage;
+public:		// User declarations
+    TFDConnection *FDConnection3;
+	__fastcall TGalleryForm(TComponent* Owner);
+	void __fastcall NextButtonClick(TObject *Sender);
+	void __fastcall PrevButtonClick(TObject *Sender);
+    void __fastcall FilterButtonClick(TObject *Sender);
+	void LoadImages(sezonFilter=0, okazjaFilter=0);
+	void __fastcall ImageClick(TObject *Sender);
+};
+//---------------------------------------------------------------------------
+
+extern PACKAGE TGalleryForm *GalleryForm;
+
+//---------------------------------------------------------------------------
+
+#endif
+
